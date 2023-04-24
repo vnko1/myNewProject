@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Pressable,
   View,
@@ -6,27 +6,39 @@ import {
   TextInput,
   Image,
   StyleSheet,
-  TouchableWithoutFeedback,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import SvgComponent from "../SvgComponent";
 
 const initialValue = { login: "", email: "", password: "" };
 
-export default RegistrationScreen = () => {
+export default RegistrationScreen = ({
+  hideKeyboard,
+  keyBoardIsShown,
+  setKeyBoardIsShown,
+  setShowLoginScreen,
+}) => {
   const [inputValue, setInputValue] = useState(initialValue);
   const [hiddenPassword, setHiddenPassword] = useState(true);
 
-  useEffect(() => {}, []);
-
-  const onPressBtn = () => console.log(inputValue);
+  const onPressBtn = () => {
+    console.log(inputValue);
+    hideKeyboard();
+    setInputValue(initialValue);
+  };
   return (
-    <View style={styles.container}>
-      <Image
-        style={{
-          ...styles.image,
-          transform: [{ translateX: -60 }],
-        }}
-      />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} />
+        <Pressable>
+          <SvgComponent style={{ transform: [{ rotate: "45deg" }] }} />
+        </Pressable>
+      </View>
       <Text style={styles.title}>Регистрация</Text>
       <View style={styles.form}>
         <View style={styles.inputContainer}>
@@ -37,6 +49,7 @@ export default RegistrationScreen = () => {
               borderColor: inputValue.login ? "#FF6C00" : "#E8E8E8",
             }}
             placeholder={"Логин"}
+            onFocus={() => setKeyBoardIsShown(true)}
             onChangeText={(value) =>
               setInputValue((prevState) => ({ ...prevState, login: value }))
             }
@@ -51,6 +64,7 @@ export default RegistrationScreen = () => {
               borderColor: inputValue.email ? "#FF6C00" : "#E8E8E8",
             }}
             placeholder={"Адрес электронной почты"}
+            onFocus={() => setKeyBoardIsShown(true)}
             onChangeText={(value) =>
               setInputValue((prevState) => ({ ...prevState, email: value }))
             }
@@ -66,14 +80,19 @@ export default RegistrationScreen = () => {
             }}
             secureTextEntry={hiddenPassword}
             placeholder={"Пароль"}
+            onFocus={() => setKeyBoardIsShown(true)}
             onChangeText={(value) =>
-              setInputValue((prevState) => ({ ...prevState, password: value }))
+              setInputValue((prevState) => ({
+                ...prevState,
+                password: value,
+              }))
             }
             value={inputValue.password}
           ></TextInput>
           <Pressable
             style={styles.passwordBtn}
             onPress={() => setHiddenPassword((prevState) => !prevState)}
+            disabled={inputValue.password !== "" ? false : true}
           >
             <Text style={styles.passwordBtnText}>
               {hiddenPassword ? "Показать" : "Скрыть"}
@@ -81,29 +100,36 @@ export default RegistrationScreen = () => {
           </Pressable>
         </View>
       </View>
-      <View style={{ ...styles.btnContainer, marginBottom: 16 }}>
-        <TouchableOpacity
-          onPress={onPressBtn}
-          activeOpacity={0.8}
-          disabled={
-            inputValue.login !== "" &&
-            inputValue.email !== "" &&
-            inputValue.password !== ""
-              ? false
-              : true
-          }
-        >
-          <View style={styles.regBtn}>
-            <Text style={styles.btnText}>Зарегистрироваться</Text>
+      {!keyBoardIsShown && (
+        <View style={styles.btnContainer}>
+          <View style={{ marginBottom: 16 }}>
+            <TouchableOpacity
+              onPress={onPressBtn}
+              activeOpacity={0.8}
+              disabled={
+                inputValue.login !== "" &&
+                inputValue.email !== "" &&
+                inputValue.password !== ""
+                  ? false
+                  : true
+              }
+            >
+              <View style={styles.regBtn}>
+                <Text style={styles.btnText}>Зарегистрироваться</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
-      <View style={{ ...styles.btnContainer, alignItems: "center" }}>
-        <Pressable style={styles.link}>
-          <Text style={styles.linkText}>Уже есть аккаунт? Войти</Text>
-        </Pressable>
-      </View>
-    </View>
+          <View style={{ ...styles.btnContainer, alignItems: "center" }}>
+            <Pressable
+              style={styles.link}
+              onPress={() => setShowLoginScreen(true)}
+            >
+              <Text style={styles.linkText}>Уже есть аккаунт? Войти</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
+    </KeyboardAvoidingView>
   );
 };
 
@@ -112,15 +138,20 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     width: "100%",
-    height: "70%",
     borderRadius: "25px 25px 0px 0px",
-
     alignItems: "center",
   },
-  image: {
+  imageContainer: {
     position: "absolute",
     left: "50%",
     top: -60,
+    transform: [{ translateX: -60 }],
+  },
+  image: {
+    // position: "absolute",
+    // left: "50%",
+    // top: -60,
+    // transform: [{ translateX: -60 }],
     borderRadius: 16,
     width: 120,
     height: 120,
@@ -142,7 +173,7 @@ const styles = StyleSheet.create({
     marginBottom: 43,
   },
   inputContainer: {
-    marginHorizontal: 32,
+    marginHorizontal: 16,
   },
   input: {
     borderColor: "#E8E8E8",
@@ -166,10 +197,10 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#1B4371",
   },
-  btnContainer: { width: "100%" },
+  btnContainer: { width: "100%", marginBottom: 45 },
   regBtn: {
     backgroundColor: "#FF6C00",
-    marginHorizontal: 32,
+    marginHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 16,
     borderRadius: 100,
