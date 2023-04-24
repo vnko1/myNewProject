@@ -8,18 +8,35 @@ import {
 } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import * as ImagePicker from "expo-image-picker";
 import RegistrationScreen from "./screens/RegistrationScreen";
 import LoginScreen from "./screens/LoginScreen";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const [image, setImage] = useState(null);
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [keyBoardIsShown, setKeyBoardIsShown] = useState(false);
+  const [imageIsLoaded, setImageIsLoaded] = useState(false);
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
   });
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      setImageIsLoaded(true);
+    }
+  };
 
   const hideKeyboard = () => {
     setKeyBoardIsShown(false);
@@ -49,6 +66,9 @@ export default function App() {
               keyBoardIsShown={keyBoardIsShown}
               setKeyBoardIsShown={setKeyBoardIsShown}
               setShowLoginScreen={setShowLoginScreen}
+              pickImage={pickImage}
+              image={image}
+              imageIsLoaded={imageIsLoaded}
             />
           ) : (
             <RegistrationScreen
@@ -56,6 +76,9 @@ export default function App() {
               keyBoardIsShown={keyBoardIsShown}
               setKeyBoardIsShown={setKeyBoardIsShown}
               setShowLoginScreen={setShowLoginScreen}
+              pickImage={pickImage}
+              image={image}
+              imageIsLoaded={imageIsLoaded}
             />
           )}
         </ImageBackground>

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import SvgComponent from "../SvgComponent";
 
 const initialValue = { login: "", password: "" };
 
@@ -18,6 +19,9 @@ export default LoginScreen = ({
   keyBoardIsShown,
   setKeyBoardIsShown,
   setShowLoginScreen,
+  pickImage,
+  image,
+  imageIsLoaded,
 }) => {
   const [inputValue, setInputValue] = useState(initialValue);
   const [hiddenPassword, setHiddenPassword] = useState(true);
@@ -32,7 +36,18 @@ export default LoginScreen = ({
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Image style={styles.image} />
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={{ uri: image }} />
+        <Pressable
+          style={{
+            ...styles.imageIcon,
+            borderColor: imageIsLoaded ? "#BDBDBD" : "#FF6C00",
+          }}
+          onPress={pickImage}
+        >
+          <SvgComponent imageIsLoaded={imageIsLoaded} />
+        </Pressable>
+      </View>
       <Text style={styles.title}>Войти</Text>
       <View style={styles.form}>
         <View style={styles.inputContainer}>
@@ -118,15 +133,30 @@ const styles = StyleSheet.create({
     borderRadius: "25px 25px 0px 0px",
     alignItems: "center",
   },
-  image: {
+  imageContainer: {
     position: "absolute",
     left: "50%",
     top: -60,
     transform: [{ translateX: -60 }],
+  },
+  image: {
     borderRadius: 16,
     width: 120,
     height: 120,
     backgroundColor: "#F6F6F6",
+  },
+
+  imageIcon: {
+    position: "absolute",
+    bottom: 0,
+    right: -12,
+    borderWidth: 1,
+    borderColor: "#FF6C00",
+    borderRadius: "50%",
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     marginTop: 92,
@@ -184,7 +214,6 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 
-  // link: { textAlign: "center" },
   linkText: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
