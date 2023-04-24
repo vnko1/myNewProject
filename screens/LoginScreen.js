@@ -130,7 +130,8 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     width: "100%",
-    borderRadius: "25px 25px 0px 0px",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     alignItems: "center",
   },
   imageContainer: {
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     right: -12,
     borderWidth: 1,
     borderColor: "#FF6C00",
-    borderRadius: "50%",
+    borderRadius: 50,
     width: 25,
     height: 25,
     justifyContent: "center",
