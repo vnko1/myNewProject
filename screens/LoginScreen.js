@@ -84,7 +84,10 @@ export default LoginScreen = ({
             value={inputValue.password}
           ></TextInput>
           <Pressable
-            style={styles.passwordBtn}
+            style={{
+              ...styles.passwordBtn,
+              top: Platform.OS === "ios" ? 16 : 22,
+            }}
             onPress={() => setHiddenPassword((prevState) => !prevState)}
             disabled={inputValue.password !== "" ? false : true}
           >
@@ -101,7 +104,9 @@ export default LoginScreen = ({
               onPress={onPressBtn}
               activeOpacity={0.8}
               disabled={
-                inputValue.login !== "" && inputValue.password !== ""
+                inputValue.login !== "" &&
+                inputValue.email !== "" &&
+                inputValue.password !== ""
                   ? false
                   : true
               }
@@ -116,7 +121,9 @@ export default LoginScreen = ({
               style={styles.link}
               onPress={() => setShowLoginScreen(false)}
             >
-              <Text style={styles.linkText}>Уже есть аккаунт? Войти</Text>
+              <Text style={styles.linkText}>
+                Нет аккаунта? Зарегистрироваться
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -190,7 +197,7 @@ const styles = StyleSheet.create({
 
   passwordBtn: {
     position: "absolute",
-    top: 16,
+
     right: 16,
   },
   passwordBtnText: {

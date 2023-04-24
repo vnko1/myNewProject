@@ -100,7 +100,10 @@ export default RegistrationScreen = ({
             value={inputValue.password}
           ></TextInput>
           <Pressable
-            style={styles.passwordBtn}
+            style={{
+              ...styles.passwordBtn,
+              top: Platform.OS === "ios" ? 16 : 22,
+            }}
             onPress={() => setHiddenPassword((prevState) => !prevState)}
             disabled={inputValue.password !== "" ? false : true}
           >
@@ -208,7 +211,6 @@ const styles = StyleSheet.create({
 
   passwordBtn: {
     position: "absolute",
-    top: 16,
     right: 16,
   },
   passwordBtnText: {
