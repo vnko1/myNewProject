@@ -26,7 +26,7 @@ export default RegistrationScreen = ({
 }) => {
   const [inputValue, setInputValue] = useState(initialValue);
   const [hiddenPassword, setHiddenPassword] = useState(true);
-
+  console.log("hello, world!");
   const onPressBtn = () => {
     console.log(inputValue);
     hideKeyboard();
